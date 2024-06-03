@@ -1,8 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+mod state;
 
 mod database;
-mod state;
+use crate::database::{structs};
+
+mod services;
+use crate::services::{apis};
 
 use std::option::Option;
 
@@ -10,36 +14,36 @@ use state::{AppState, ServiceAccess};
 use tauri::{State, Manager, AppHandle};
 
 #[tauri::command]
-fn add_apis(app_handle: AppHandle, data: database::AddAPI) -> bool {
-	app_handle.db(|db| database::add_api(db, data)).unwrap();
+fn add_apis(app_handle: AppHandle, data: structs::AddAPI) -> bool {
+	app_handle.db(|db| apis::add_api(db, data)).unwrap();
 
 	return true;
 }
 
 #[tauri::command]
-fn list_apis(app_handle: AppHandle) -> Vec<database::API> {
-	let items = app_handle.db(|db| database::list_apis(db)).unwrap();
+fn list_apis(app_handle: AppHandle) -> Vec<structs::API> {
+	let items = app_handle.db(|db| apis::list_apis(db)).unwrap();
 
 	return items;
 }
 
 #[tauri::command]
-fn get_api_by_id(app_handle: AppHandle, id: i32) -> Result<Option<database::API>, ()> {
-	let item = app_handle.db(|db| database::get_api_by_id(db, id)).unwrap();
+fn get_api_by_id(app_handle: AppHandle, id: i32) -> Result<Option<structs::API>, ()> {
+	let item = app_handle.db(|db| apis::get_api_by_id(db, id)).unwrap();
 
 	return Ok(item)
 }
 
 #[tauri::command]
-fn edit_api(app_handle: AppHandle, data: database::EditAPI) -> bool {
-	app_handle.db(|db| database::edit_api(db, data)).unwrap();
+fn edit_api(app_handle: AppHandle, data: structs::EditAPI) -> bool {
+	app_handle.db(|db| apis::edit_api(db, data)).unwrap();
 
 	return true;
 }
 
 #[tauri::command]
 fn delete_api(app_handle: AppHandle, id: i32) -> bool {
-	app_handle.db(|db| database::delete_api(db, id)).unwrap();
+	app_handle.db(|db| apis::delete_api(db, id)).unwrap();
 
 	return true;
 }
